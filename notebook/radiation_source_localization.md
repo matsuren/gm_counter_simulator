@@ -13,6 +13,8 @@ jupyter:
     name: python3
 ---
 
+# Single source localization
+
 ```python
 import sys
 sys.path.insert(0, "../")
