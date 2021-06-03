@@ -159,6 +159,9 @@ class World(object):
 
         # measument counts
         counts = stats.poisson.rvs(mu)
+        if not isinstance(counts, np.ndarray):
+            # if len(detectors) == 1
+            counts = np.array([counts])
 
         return counts
 

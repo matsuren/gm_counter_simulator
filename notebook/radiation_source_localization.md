@@ -24,6 +24,7 @@ from simulator import Source, Detector, World
 import numpy as np
 import matplotlib.pyplot as plt
 from typing import List
+import seaborn as sns
 ```
 
 ```python
@@ -169,6 +170,7 @@ def sum_loglikelihood(
 
 ```python
 from math import factorial
+
 p = lambda k, l: l ** k * np.exp(-l) / factorial(k)
 ```
 
@@ -186,7 +188,7 @@ print(sum(ret))
 ```python
 # Construct world
 world = World()
-world.add_source(Source(loc=[0, 1, 0], intensity=1))
+world.add_source(Source(loc=[1, 2.5, 0], intensity=2))
 world.visualize_world(figsize=(5, 5))
 ```
 
@@ -196,7 +198,6 @@ detector_locations = [
     [-1.0, 0, 0],
     [0, 0, 0],
     [1.0, 0, 0],
-
     [-1.0, 2, 0],
     [0, 2, 0],
     [1.0, 2, 0],
@@ -211,7 +212,7 @@ print(f"max_count: {cnts.max()}")
 locs = np.array(detector_locations)
 fig = plt.figure()
 ax = fig.add_subplot(111)
-sc = ax.scatter(locs[:, 0], locs[:,1], c=cnts,cmap=plt.cm.jet)
+sc = ax.scatter(locs[:, 0], locs[:, 1], c=cnts, cmap=plt.cm.jet)
 _ = fig.colorbar(sc, orientation="horizontal")
 ax.set_aspect("equal")
 ```
@@ -248,11 +249,6 @@ for i in range(-1, 3):
     print(f" Likelihood: {sum_logli:.3f}")
 ```
 
-## Cross-entropy method 
-Reference: https://youtu.be/mJlAfKc4990?t=4296
-
-
-
 ```python
 def sample(mu: List[float], std: List[float], num: int = 1) -> np.ndarray:
     """
@@ -270,7 +266,8 @@ def sample(mu: List[float], std: List[float], num: int = 1) -> np.ndarray:
     sample_s: ndarray
         Sampled states whose shape is (num, 4)
     """
-
+    assert len(mu) == 4, "len(mu) should be 4"
+    assert len(std) == 3, "len(std) should be 3"
     sample_loc = np.random.normal(mu[:3], std[:3], (num, 3))
     sample_q = np.random.exponential(mu[3], (num, 1))
     sample_s = np.hstack([sample_loc, sample_q])
@@ -278,13 +275,18 @@ def sample(mu: List[float], std: List[float], num: int = 1) -> np.ndarray:
     return sample_s
 ```
 
+## Cross-entropy method 
+Reference: https://youtu.be/mJlAfKc4990?t=4296
+
+
+
 ```python
 world
 ```
 
 ```python
 init_mu = [0, 0, 0, 0.1]
-std = [0.5, 0.5, 0] # std[2]=0 so that z=0
+std = [0.5, 0.5, 0]  # std[2]=0 so that z=0
 eval_num = 100
 top_n_percentile = 90
 
@@ -294,7 +296,7 @@ mu = sample(init_mu, std).squeeze()
 curr_max = -np.inf
 curr_max_mu = None
 for i in range(1000):
-    # Sample 
+    # Sample
     sample_s = sample(mu, std, eval_num)
 
     # Calculate loglikehood
@@ -305,21 +307,206 @@ for i in range(1000):
     # Decide threshold
     logli_hist = np.array(logli_hist)
     thresh = np.percentile(logli_hist, top_n_percentile)
-    
+
     # Calculate next mu
     mu = sample_s[logli_hist > thresh].mean(axis=0)
 
     # Update max mu
     max_idx = np.argmax(logli_hist)
-    if logli_hist[max_idx]>curr_max:
+    if logli_hist[max_idx] > curr_max:
         curr_max = logli_hist[max_idx]
         curr_max_mu = sample_s[max_idx]
-    
-    if not i%100:
+
+    if not i % 100:
         print(f"[{i}] Max: {curr_max:.3f}, Param:{curr_max_mu}")
 
-print('Estimation:', curr_max_mu)
-print('Groundtruth:', gt_s)
+print("Estimation:", curr_max_mu)
+print("Groundtruth:", gt_s)
 ```
 
+## Particle filter
+### Practice for particle filter
+Estimate mu and std for Normal distribution
 
+```python
+# Visualize groundtruth
+gt_mu = -10.0
+gt_scale = 5.5
+pts = np.random.normal(gt_mu, gt_scale, size=1000)
+sns.histplot(pts)
+```
+
+```python
+def g(x):
+    """Observation"""
+    y = np.random.normal(x[0], np.exp(x[1]))
+    return y
+
+
+def loglikelihood(ys, x):
+    """
+    Log likelihood function.
+    P(mu, sigma | {y0,...,yn})
+    """
+    n = len(ys)
+    mu = x[0]
+    sq_std = np.exp(x[1]) ** 2  # variance
+
+    # Calculate log likelihood
+    sq_diff = (np.array(ys) - mu) ** 2
+    logli = (
+        -0.5 * n * np.log(2 * np.pi)
+        - 0.5 * n * np.log(sq_std)
+        - 0.5 / sq_std * sq_diff.sum()
+    )
+    return logli
+
+
+def importance_sampling(weight, ys, x):
+    weight_updated = weight * np.exp(loglikelihood(ys, x))
+    return weight_updated
+```
+
+```python
+# State
+# x[0]: loc
+# x[1]: log(std) so that 0<std
+
+gt_x = [gt_mu, np.log(gt_scale)]
+
+N_m = 100  # Number of measurement
+N_p = 1000  # Number of particle
+ys = [g(gt_x) for _ in range(N_m)]  # Measurement
+
+xs = np.random.normal(0, 5, (N_p, 2))  # Initial particle
+ws = np.full(shape=(N_p), fill_value=1.0)
+```
+
+```python
+fig, ax = plt.subplots()
+ax.plot(gt_mu, gt_scale, "rd")
+print(f"Groundtruth: loc:{gt_mu:.3f}, scale:{gt_scale:.3f}")
+for epoch in range(100):
+    # Update
+    w_updated = []
+    for i in range(N_p):
+        w_updated.append(importance_sampling(ws[i], ys, xs[i]))
+
+    # Normalize weight
+    sum_w = sum(w_updated)
+    w_updated = [w / sum_w for w in w_updated]
+
+    # Resampling
+    new_xs = []
+    resamples = np.random.multinomial(N_p, w_updated)
+    for i, n in enumerate(resamples):
+        for _ in range(n):
+            # Add noise because no transition model
+            noise = np.random.normal(loc=0.0, scale=0.5, size=(2))
+            new_xs.append(xs[i] + noise)
+    xs = np.array(new_xs)
+    ws = np.full(shape=(N_p), fill_value=1.0)
+
+    # Estimation
+    est_x = xs.mean(axis=0)
+    est_loc = est_x[0]
+    est_scale = np.exp(est_x[1])
+    if not epoch % 5:
+        print(f"Pred: loc:{est_loc:.3f}, scale:{est_scale:.3f}")
+        ax.plot(est_loc, est_scale, "bd")
+```
+
+### Single source localization
+
+```python
+# # Try different detector locations
+# detector_locations = [
+#     [-1.0, 1, 0],
+#     [0, -0.5, 0],
+#     [1, 1, 0],
+#     [0, 2, 0],
+# ]
+
+# detectors = []
+# for loc in detector_locations:
+#     detectors.append(Detector(loc=loc))
+# cnts = world.get_measuments(detectors)
+# cnts
+```
+
+```python
+# Make sure if world is set correctly
+assert len(world.sources) == 1, "should be single source"
+# Groundtruth
+gt_loc = world.sources[0].loc
+gt_q = world.sources[0].intensity
+gt_s = list(gt_loc + [gt_q])
+print(f"groundtruth state: {gt_s}")
+world.visualize_world(detectors, figsize=(5, 5), plotsize=2)
+```
+
+```python
+N_p = 1000  # Number of particle
+
+# Initial particle
+is_uniform = True
+if is_uniform:
+    # Uniform
+    xs_loc = np.random.uniform(-5, 5, size=(N_p, 3))
+    xs_loc[:, 2] = 0
+    xs_q = np.random.uniform(0.1, 10, size=(N_p, 1))
+    xs = np.hstack([xs_loc, xs_q])
+else:
+    # Normal distribution
+    init_mu = [0, 0, 0, 1]
+    std = [1, 1, 0]  # std[2]=0 so that z=0
+    xs = sample(init_mu, std, N_p)
+
+ws = np.full(shape=(N_p), fill_value=1.0)
+```
+
+```python
+def importance_sampling(weight, cnt, detectors, x):
+    # TODO how to use loglikelihood for sampling?
+    logli = sum_loglikelihood(cnts, detectors, x)
+    weight_updated = weight * np.exp(logli)
+    return weight_updated
+```
+
+```python
+ax = world.visualize_world(detectors, figsize=(5, 5), plotsize=2)
+print("Groundtruth:", gt_s)
+for epoch in range(10):
+    # Update
+    w_updated = []
+    for i in range(N_p):
+        w_updated.append(importance_sampling(ws[i], cnts, detectors, xs[i]))
+
+    # Normalize weight
+    sum_w = sum(w_updated)
+    w_updated = [w / sum_w for w in w_updated]
+
+    # Resampling
+    new_xs = []
+    resamples = np.random.multinomial(N_p, w_updated)
+    for i, n in enumerate(resamples):
+        for _ in range(n):
+            # Add noise because no transition model
+            # Noise should be zero-centered
+            noise = np.random.multivariate_normal(
+                mean=[0, 0, 0, 0], cov=np.diag([0.05, 0.05, 0, 0.1])
+            )
+            new_xs.append(xs[i] + noise)
+    xs = np.array(new_xs)
+    xs[xs[:, 3] <= 0] = 0.01  # Intensity is always positive
+    ws = np.full(shape=(N_p), fill_value=1.0)
+
+    # Estimation
+    est_x = xs.mean(axis=0)
+    if not epoch % 10:
+        print("Estimation:", est_x)
+        ax.plot(est_x[0], est_x[1], "cd")
+print("Final estimation:", est_x)
+ax.plot(est_x[0], est_x[1], "yd")
+ax.scatter(xs[:, 0], xs[:, 1], alpha=0.05)
+```
