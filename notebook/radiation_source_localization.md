@@ -15,12 +15,11 @@ jupyter:
 
 ```python
 import sys
-
 sys.path.insert(0, "../")
 ```
 
 ```python
-from simulator import Source, Detector, World
+from gm_simulator import Source, Detector, World
 import numpy as np
 import matplotlib.pyplot as plt
 from typing import List

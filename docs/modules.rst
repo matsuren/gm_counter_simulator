@@ -1,7 +1,7 @@
-radiation_simulator
-===================
+gm_counter_simulator
+====================
 
 .. toctree::
    :maxdepth: 4
 
-   simulator
+   gm_simulator
