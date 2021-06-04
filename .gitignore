@@ -130,3 +130,5 @@ dmypy.json
 
 # Other
 *.ipynb
+.vscode
+.editorconfig

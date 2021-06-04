@@ -1,8 +1,9 @@
+from dataclasses import dataclass
+from typing import List, Tuple, Union
+
+import matplotlib.pyplot as plt
 import numpy as np
 import scipy.stats as stats
-import matplotlib.pyplot as plt
-from typing import List, Tuple, Optional
-from dataclasses import dataclass
 from scipy.spatial import distance
 
 
@@ -112,7 +113,7 @@ class World(object):
         for x, y in zip(x_grid.flatten(), y_grid.flatten()):
             self.add_source(Source(loc=[x, y, bl[2]], intensity=q))
 
-    def get_measuments(self, detectors: List[Detector]) -> np.ndarray:
+    def get_measuments(self, detectors: Union[List[Detector], Detector]) -> np.ndarray:
         """
         Get measurement without background noise.
         Internally, area source is converted multiple point sources.
@@ -132,19 +133,16 @@ class World(object):
             detectors = [detectors]
 
         # detectors loc
-        locs = [it.loc for it in detectors]
-        locs = np.stack(locs)
+        locs = np.stack([d.loc for d in detectors])
 
         # detector factors
-        factors = [it.duration * it.factor for it in detectors]
-        factors = np.stack(factors)
+        factors = np.stack([d.duration * d.factor for d in detectors])
 
         # sources
-        srcs = [it.loc for it in self.sources]
-        srcs = np.stack(srcs)
+        srcs = np.stack([src.loc for src in self.sources])
 
         # intensity
-        q = np.array([it.intensity for it in self.sources])
+        q = np.array([src.intensity for src in self.sources])
 
         dist = distance.cdist(locs, srcs)
         assert not np.any(
@@ -167,7 +165,7 @@ class World(object):
 
     def visualize_world(
         self,
-        detectors: Optional[List[Detector]] = None,
+        detectors: List[Detector] = [],
         figsize: Tuple[float, float] = (8, 8),
         plotsize: float = 10,
     ) -> plt.Axes:
@@ -176,8 +174,8 @@ class World(object):
 
         Parameters
         ----------
-        detectors: Optional[List[Detector]]
-            List of detectors to be visualized. (default is None)
+        detectors: List[Detector]
+            List of detectors to be visualized. (default is [])
         figsize: tuple(float, float)
             figsize for plot.
         plotsize: float
@@ -199,30 +197,28 @@ class World(object):
         )
         ax.plot([0], [0], "rd")
         ax.set_aspect("equal")
-        ax.set_title(
-            "X (horizontal), Y (vertical), Origin (red dot), Detector (x) "
-        )
+        detec_msg = "Detector (x)" if len(detectors) > 0 else ""
+        ax.set_title(f"X (horizontal), Y (vertical), Origin (red dot) {detec_msg}")
 
         # Visualize sources
         x = []
         y = []
         c = []
-        for it in self.sources:
-            x.append(it.loc[0])
-            y.append(it.loc[1])
-            c.append(it.intensity)
+        for src in self.sources:
+            x.append(src.loc[0])
+            y.append(src.loc[1])
+            c.append(src.intensity)
 
         sc = ax.scatter(x, y, s=100, c=c, cmap=plt.cm.jet)
         _ = fig.colorbar(sc, orientation="horizontal")
 
-        # Visualize detectors if not None
-        if detectors:
-            x_detec = []
-            y_detec = []
-            for it in detectors:
-                x_detec.append(it.loc[0])
-                y_detec.append(it.loc[1])
-            ax.plot(x_detec, y_detec, "bx")
+        # Visualize detectors if not empty
+        x_detec = []
+        y_detec = []
+        for d in detectors:
+            x_detec.append(d.loc[0])
+            y_detec.append(d.loc[1])
+        ax.plot(x_detec, y_detec, "bx")
 
         return ax
 

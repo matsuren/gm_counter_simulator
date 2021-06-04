@@ -61,9 +61,9 @@ plt.imshow(viz, vmin=0, vmax=np.percentile(cnts, 99))
 
 <!-- #region -->
 # Localization
-Radiation localization assuming only one source. 
+Radiation localization assuming only one source.
 
-State: $\mathbf{s} =(\mathbf{x}_{0} ,q_{0} )\in \mathbb{R}^{4}$, where $q_{0}$ is intensity of radiation source, and $\mathbf{x}_{0} =[x_{0} ,y_{0} ,z_{0} ]^{\top }$ 
+State: $\mathbf{s} =(\mathbf{x}_{0} ,q_{0} )\in \mathbb{R}^{4}$, where $q_{0}$ is intensity of radiation source, and $\mathbf{x}_{0} =[x_{0} ,y_{0} ,z_{0} ]^{\top }$
 
 Measurement: $p_{i} \in \mathbb{R}$, where $y_{i}$ is the number of count detected by detector $i$ located at $\mathbf{y}_{i} \in \mathbb{R}^{3}$.
 
@@ -276,7 +276,7 @@ def sample(mu: List[float], std: List[float], num: int = 1) -> np.ndarray:
     return sample_s
 ```
 
-## Cross-entropy method 
+## Cross-entropy method
 Reference: https://youtu.be/mJlAfKc4990?t=4296
 
 
