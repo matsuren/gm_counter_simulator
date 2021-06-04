@@ -1,0 +1,390 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>gm_simulator package &mdash; Simple Geiger–Muller Counter Simulator  0.0.1 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="gm_counter_simulator" href="modules.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Simple Geiger–Muller Counter Simulator 
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">gm_counter_simulator</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">gm_simulator package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-gm_simulator.core">gm_simulator.core module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-gm_simulator">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Simple Geiger–Muller Counter Simulator </a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="modules.html">gm_counter_simulator</a> &raquo;</li>
+        
+      <li>gm_simulator package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/gm_simulator.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="gm-simulator-package">
+<h1>gm_simulator package<a class="headerlink" href="#gm-simulator-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-gm_simulator.core">
+<span id="gm-simulator-core-module"></span><h2>gm_simulator.core module<a class="headerlink" href="#module-gm_simulator.core" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="gm_simulator.core.Source">
+<em class="property">class </em><code class="sig-prename descclassname">gm_simulator.core.</code><code class="sig-name descname">Source</code><span class="sig-paren">(</span><em class="sig-param">loc: List[float], intensity: float = 1.0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gm_simulator/core.html#Source"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gm_simulator.core.Source" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Create point radiation source.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Source</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="mf">2.0</span><span class="p">)</span>
+<span class="go">Source(loc=[1, 2, 3], intensity=2.0)</span>
+</pre></div>
+</div>
+<dl class="attribute">
+<dt id="gm_simulator.core.Source.loc">
+<code class="sig-name descname">loc</code><em class="property">: List[float]</em><em class="property"> = None</em><a class="headerlink" href="#gm_simulator.core.Source.loc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Location of the radiation source such that [x, y, z] [m].</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="gm_simulator.core.Source.intensity">
+<code class="sig-name descname">intensity</code><em class="property">: float</em><em class="property"> = 1.0</em><a class="headerlink" href="#gm_simulator.core.Source.intensity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Intensity of the radiation source [MBq]. (default is 1.0)</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="gm_simulator.core.AreaSource">
+<em class="property">class </em><code class="sig-prename descclassname">gm_simulator.core.</code><code class="sig-name descname">AreaSource</code><span class="sig-paren">(</span><em class="sig-param">bl_loc: List[float], width: float, intensity: float = 1.0, div_num: int = 20</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gm_simulator/core.html#AreaSource"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gm_simulator.core.AreaSource" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Create area radiation source. The shape is only square at this moment,
+and normal vector is along the z-axis.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">AreaSource</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="mf">2.0</span><span class="p">)</span>
+<span class="go">AreaSource(bl_loc=[1, 2, 3], width=2.0, intensity=1.0, div_num=20)</span>
+</pre></div>
+</div>
+<dl class="attribute">
+<dt id="gm_simulator.core.AreaSource.bl_loc">
+<code class="sig-name descname">bl_loc</code><em class="property">: List[float]</em><em class="property"> = None</em><a class="headerlink" href="#gm_simulator.core.AreaSource.bl_loc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Location of the bottom left of the radiation source such that [x, y, z] [m].</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="gm_simulator.core.AreaSource.width">
+<code class="sig-name descname">width</code><em class="property">: float</em><em class="property"> = None</em><a class="headerlink" href="#gm_simulator.core.AreaSource.width" title="Permalink to this definition">¶</a></dt>
+<dd><p>Width of the square radiation area source [m].</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="gm_simulator.core.AreaSource.intensity">
+<code class="sig-name descname">intensity</code><em class="property">: float</em><em class="property"> = 1.0</em><a class="headerlink" href="#gm_simulator.core.AreaSource.intensity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Intensity of the radiation source [MBq]. (default is 1.0)</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="gm_simulator.core.AreaSource.div_num">
+<code class="sig-name descname">div_num</code><em class="property">: int</em><em class="property"> = 20</em><a class="headerlink" href="#gm_simulator.core.AreaSource.div_num" title="Permalink to this definition">¶</a></dt>
+<dd><p>Area source is divided into div_num*div_num point sources. (default is 20)</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="gm_simulator.core.Detector">
+<em class="property">class </em><code class="sig-prename descclassname">gm_simulator.core.</code><code class="sig-name descname">Detector</code><span class="sig-paren">(</span><em class="sig-param">loc: List[float], duration: float = 10, factor: float = 5</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gm_simulator/core.html#Detector"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gm_simulator.core.Detector" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Create radiation detector. The detector only measures count.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Detector</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="mf">2.0</span><span class="p">)</span>
+<span class="go">Detector(loc=[1, 2, 3], duration=2.0, factor=5)</span>
+</pre></div>
+</div>
+<dl class="attribute">
+<dt id="gm_simulator.core.Detector.loc">
+<code class="sig-name descname">loc</code><em class="property">: List[float]</em><em class="property"> = None</em><a class="headerlink" href="#gm_simulator.core.Detector.loc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Location of the detector such that [x, y, z] [m].</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="gm_simulator.core.Detector.duration">
+<code class="sig-name descname">duration</code><em class="property">: float</em><em class="property"> = 10</em><a class="headerlink" href="#gm_simulator.core.Detector.duration" title="Permalink to this definition">¶</a></dt>
+<dd><p>Measurement time of the detector <cite>t</cite> [s]. (default is 10)</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="gm_simulator.core.Detector.factor">
+<code class="sig-name descname">factor</code><em class="property">: float</em><em class="property"> = 5</em><a class="headerlink" href="#gm_simulator.core.Detector.factor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Factor to consider counting efficiency, size, etc. <cite>f</cite> (default is 5)
+<cite>mu</cite> of Poisson distribution is calculated as follows:
+<cite>mu</cite> = <cite>ftq</cite>/<cite>d^2</cite>,
+where <cite>d</cite> is the distance between the detector and sources.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="gm_simulator.core.World">
+<em class="property">class </em><code class="sig-prename descclassname">gm_simulator.core.</code><code class="sig-name descname">World</code><a class="reference internal" href="_modules/gm_simulator/core.html#World"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gm_simulator.core.World" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Create world for adding radiation sources and detectors.</p>
+<dl class="method">
+<dt id="gm_simulator.core.World.add_source">
+<code class="sig-name descname">add_source</code><span class="sig-paren">(</span><em class="sig-param">source: gm_simulator.core.Source</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gm_simulator/core.html#World.add_source"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gm_simulator.core.World.add_source" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add radiation point source.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>source</strong> (<a class="reference internal" href="#gm_simulator.core.Source" title="gm_simulator.core.Source"><em>Source</em></a>) – Radiation point source.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="gm_simulator.core.World.add_area_source">
+<code class="sig-name descname">add_area_source</code><span class="sig-paren">(</span><em class="sig-param">source: gm_simulator.core.AreaSource</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gm_simulator/core.html#World.add_area_source"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gm_simulator.core.World.add_area_source" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add radiation area source.
+Internally, area source is converted multiple point sources.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>source</strong> (<a class="reference internal" href="#gm_simulator.core.AreaSource" title="gm_simulator.core.AreaSource"><em>AreaSource</em></a>) – Radiation area source.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="gm_simulator.core.World.get_measuments">
+<code class="sig-name descname">get_measuments</code><span class="sig-paren">(</span><em class="sig-param">detectors: Union[List[gm_simulator.core.Detector], gm_simulator.core.Detector]</em><span class="sig-paren">)</span> &#x2192; numpy.ndarray<a class="reference internal" href="_modules/gm_simulator/core.html#World.get_measuments"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gm_simulator.core.World.get_measuments" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get measurement without background noise.
+Internally, area source is converted multiple point sources.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>detectors</strong> (<em>List</em><em>[</em><a class="reference internal" href="#gm_simulator.core.Detector" title="gm_simulator.core.Detector"><em>Detector</em></a><em>]</em>) – List of detectors.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>counts</strong> – Counts measured by the detectors</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="gm_simulator.core.World.visualize_world">
+<code class="sig-name descname">visualize_world</code><span class="sig-paren">(</span><em class="sig-param">detectors: List[gm_simulator.core.Detector] = []</em>, <em class="sig-param">figsize: Tuple[float</em>, <em class="sig-param">float] = (8</em>, <em class="sig-param">8)</em>, <em class="sig-param">plotsize: float = 10</em><span class="sig-paren">)</span> &#x2192; matplotlib.axes._axes.Axes<a class="reference internal" href="_modules/gm_simulator/core.html#World.visualize_world"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gm_simulator.core.World.visualize_world" title="Permalink to this definition">¶</a></dt>
+<dd><p>Visualize radiation sources and detectors in world (X-Y plane).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>detectors</strong> (<em>List</em><em>[</em><a class="reference internal" href="#gm_simulator.core.Detector" title="gm_simulator.core.Detector"><em>Detector</em></a><em>]</em>) – List of detectors to be visualized. (default is [])</p></li>
+<li><p><strong>figsize</strong> (<em>tuple</em><em>(</em><em>float</em><em>, </em><em>float</em><em>)</em>) – figsize for plot.</p></li>
+<li><p><strong>plotsize</strong> (<em>float</em>) – Plot in xy plane [-plotsize, plotsize] x [-plotsize, plotsize]</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>ax</strong> – Matplotlib axes</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>plt.Axes</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-gm_simulator">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-gm_simulator" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="modules.html" class="btn btn-neutral float-left" title="gm_counter_simulator" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, Ren Komatsu.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
