@@ -331,3 +331,38 @@ if len(cand_mean_xs) == 1:
     for key, val in cand_mean_xs.items():
         ax.plot(val[:, 0], val[:, 1], "yd")
 ```
+
+# The curse of dimensionality
+I guess at least one of the initial particles should be close to the groundtruth. However, it get harder as the dimmention is increase.
+
+```python
+N_src = 3
+dim = 4 * N_src
+N = 100000
+
+# Groundtruth
+gt = np.random.uniform(-0.5, 0.5, dim)
+# Initial particle
+particles = np.random.uniform(-0.5, 0.5, (N, dim))
+diff = np.linalg.norm(gt - particles, axis=1)
+diff.sort()
+```
+
+```python
+x = []
+y = []
+fig, ax = plt.subplots(1, 1)
+for ratio in [0.5, 0.4, 0.3, 0.2, 0.1, 0.05]:
+    n = (diff < ratio).sum()
+    if n > 0:
+        print(n, ratio)
+        x.append(ratio)
+        y.append(n)
+    else:
+        print("Not found in ", ratio)
+ax.plot(x, y)
+```
+
+```python
+
+```
