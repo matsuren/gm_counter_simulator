@@ -511,3 +511,151 @@ print("Final estimation:", est_x)
 ax.plot(est_x[0], est_x[1], "yd")
 ax.scatter(xs[:, 0], xs[:, 1], alpha=0.05)
 ```
+
+## MCMC
+### NumPyro
+
+```python
+import arviz as az
+import jax
+import jax.numpy as jnp
+import numpy as np
+import numpyro
+import numpyro.distributions as dist
+from numpyro import handlers
+from numpyro.infer import MCMC, NUTS, Predictive
+```
+
+```python
+numpyro.enable_validation(True)
+numpyro.set_platform("cpu")
+
+draws = 2000
+chains = 2
+```
+
+```python
+# with handlers.seed(rng_seed=0): 
+#     y_ = model(detectors, Y=None)
+# y_
+```
+
+```python
+# Y = None
+# with handlers.seed(rng_seed=0): 
+#     # Prior
+#     rad_loc = numpyro.sample('rad_loc', dist.Normal(loc=jnp.array([0,0,0]), scale=jnp.array([5,5,0.01])))
+#     rad_q = numpyro.sample('rad_q', dist.Exponential(rate=0.1))
+    
+#     # Lambda for Poisson
+#     lmds = []
+#     for detec in detectors:
+#         factor = detec.duration * detec.factor
+#         d = jnp.linalg.norm(rad_loc - jnp.array(detec.loc))
+#         lmds.append(factor*rad_q/d/d)
+#     lmds = numpyro.deterministic('lambda', jnp.array(lmds))
+#     Y_obs = numpyro.sample("obs", dist.Poisson(lmds), obs=Y)
+```
+
+```python
+def model(detectors, Y=None):
+    # Prior
+    rad_loc = numpyro.sample('rad_loc', dist.Normal(loc=jnp.array([0,0,0]), scale=jnp.array([5,5,0.01])))
+    rad_q = numpyro.sample('rad_q', dist.Exponential(rate=0.1))
+    
+    # Lambda for Poisson
+    lmds = []
+    for detec in detectors:
+        factor = detec.duration * detec.factor
+        d = jnp.linalg.norm(rad_loc - jnp.array(detec.loc))
+        lmds.append(factor*rad_q/d/d)
+    lmds = numpyro.deterministic('lambda', jnp.array(lmds))
+    Y_obs = numpyro.sample("obs", dist.Poisson(lmds), obs=Y)
+    return Y_obs
+```
+
+```python
+Y = jnp.array(cnts)
+nuts_kernel = NUTS(model)
+mcmc = MCMC(nuts_kernel, num_samples=draws, num_warmup=1000, num_chains=chains)
+rng_key = jax.random.PRNGKey(0)
+mcmc.run(rng_key, detectors, Y)
+```
+
+```python
+print("Groundtruth:", gt_s)
+```
+
+```python
+mcmc.print_summary()
+```
+
+```python
+az.plot_trace(mcmc, var_names=["rad_loc", "rad_q"], combined=False);
+```
+
+```python
+ax = world.visualize_world(detectors, figsize=(5, 5), plotsize=2)
+s = mcmc.get_samples()
+est_x = s["rad_loc"]
+ax.plot(est_x[:, 0].mean(), est_x[:, 1].mean(), "yd")
+ax.scatter(est_x[::10, 0], est_x[::10, 1], alpha=0.05)
+```
+
+### Pyro
+NumPyro is a lot faster than Pyro
+
+```python
+import arviz as az
+import numpy as np
+import pyro
+import pyro.distributions as dist
+import torch
+# torch.multiprocessing.set_start_method("spawn")
+from pyro.infer import MCMC, NUTS, Predictive
+```
+
+```python
+pyro.enable_validation(True)
+pyro.set_rng_seed(0)
+
+draws = 1000
+chains = 1
+```
+
+```python
+def model(detectors, Y=None):
+    # Prior
+    rad_loc = pyro.sample('rad_loc', dist.Normal(loc=torch.zeros(3), scale=torch.tensor([2, 2, 0.001])))
+    rad_q = pyro.sample('rad_q', dist.Exponential(rate=0.5))
+
+    # Lambda for Poisson
+    lmds = []
+    for detec in detectors:
+        factor = detec.duration * detec.factor
+        d = torch.norm(rad_loc - torch.tensor(detec.loc))
+        lmds.append(factor*rad_q/d/d)
+    lmds = pyro.deterministic('lambda', torch.tensor(lmds))
+
+    Y_obs = pyro.sample("obs", dist.Poisson(lmds), obs=Y)
+    return Y_obs
+```
+
+```python
+Y = torch.tensor(cnts)
+nuts_kernel = NUTS(model)
+mcmc = MCMC(nuts_kernel, num_samples=draws, num_chains=1)
+mcmc.run(detectors, Y)
+```
+
+```python
+print("Groundtruth:", gt_s)
+```
+
+```python
+mcmc.summary()
+```
+
+```python
+
+```

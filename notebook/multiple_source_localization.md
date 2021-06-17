@@ -182,7 +182,7 @@ def sum_loglikelihood(
 world = World()
 world.add_source(Source(loc=[2.5, 4, 0], intensity=1))
 world.add_source(Source(loc=[-3.5, -1, 0], intensity=2.3))
-# world.add_source(Source(loc=[3.5, -1, 0], intensity=1.6))
+world.add_source(Source(loc=[3.5, -1, 0], intensity=1.6))
 # world.add_source(Source(loc=[-3, 4, 0], intensity=2.3))
 
 ax = world.visualize_world(figsize=(5,5), plotsize=5)
@@ -336,7 +336,7 @@ if len(cand_mean_xs) == 1:
 I guess at least one of the initial particles should be close to the groundtruth. However, it get harder as the dimmention is increase.
 
 ```python
-N_src = 3
+N_src = 4
 dim = 4 * N_src
 N = 100000
 
@@ -361,6 +361,124 @@ for ratio in [0.5, 0.4, 0.3, 0.2, 0.1, 0.05]:
     else:
         print("Not found in ", ratio)
 ax.plot(x, y)
+```
+
+## MCMC
+### NumPyro
+
+```python
+import arviz as az
+import jax
+import jax.numpy as jnp
+import numpy as np
+import numpyro
+import numpyro.distributions as dist
+from numpyro import handlers
+from numpyro.infer import MCMC, NUTS, Predictive
+```
+
+```python
+numpyro.enable_validation(True)
+numpyro.set_platform("cpu")
+
+draws = 10000
+chains = 1
+N_src = 3
+```
+
+```python
+# N_src = 3
+# Y = None
+# with handlers.seed(rng_seed=0):
+#     # Prior
+#     prior_mu = jnp.array([0, 0, 0])
+#     prior_scale = jnp.array([5, 5, 0.01])
+
+#     rad_locs = []
+#     rad_qs = []
+#     for i in range(N_src):
+#         rad_locs.append(
+#             numpyro.sample(
+#                 f"rad{i}_loc",
+#                 dist.Normal(loc=prior_mu, scale=prior_scale),
+#             )
+#         )
+#         rad_qs.append(numpyro.sample(f"rad{i}_q", dist.Exponential(rate=0.1)))
+
+#     # Lambda for Poisson
+#     lmds = []
+#     for detec in detectors:
+#         lmd = 0
+#         factor = detec.duration * detec.factor
+#         for i in range(N_src):
+#             d = jnp.linalg.norm(rad_locs[i] - jnp.array(detec.loc))
+#             lmd += factor*rad_qs[i]/d/d
+#         lmds.append(lmd)
+#     lmds = numpyro.deterministic("lambda", jnp.array(lmds))
+#     Y_obs = numpyro.sample("obs", dist.Poisson(lmds), obs=Y)
+```
+
+```python
+def model(detectors, Y=None, N_src=2):
+    # Prior
+    prior_mu = jnp.array([0, 0, 0])
+    prior_scale = jnp.array([5, 5, 0.01])
+
+    rad_locs = []
+    rad_qs = []
+    for i in range(N_src):
+        rad_locs.append(
+            numpyro.sample(
+                f"rad{i}_loc",
+                dist.Normal(loc=prior_mu, scale=prior_scale),
+            )
+        )
+        rad_qs.append(numpyro.sample(f"rad{i}_q", dist.Exponential(rate=0.2)))
+
+    # Lambda for Poisson
+    lmds = []
+    for detec in detectors:
+        lmd = 0
+        factor = detec.duration * detec.factor
+        for i in range(N_src):
+            d = jnp.linalg.norm(rad_locs[i] - jnp.array(detec.loc))
+            lmd += factor*rad_qs[i]/d/d
+        lmds.append(lmd)
+    lmds = numpyro.deterministic("lambda", jnp.array(lmds))
+    Y_obs = numpyro.sample("obs", dist.Poisson(lmds), obs=Y)
+    return Y_obs
+```
+
+```python
+Y = jnp.array(cnts)
+nuts_kernel = NUTS(model)
+mcmc = MCMC(nuts_kernel, num_samples=draws, num_warmup=1000, num_chains=chains)
+rng_key = jax.random.PRNGKey(0)
+mcmc.run(rng_key, detectors, Y, N_src)
+```
+
+```python
+print("Groundtruth:", gt_s)
+```
+
+```python
+mcmc.print_summary()
+```
+
+```python
+az.plot_trace(mcmc, var_names=["rad0_loc", "rad0_q"], combined=False);
+```
+
+```python
+az.plot_trace(mcmc, var_names=["rad1_loc", "rad1_q"], combined=False);
+```
+
+```python
+ax = world.visualize_world(detectors, figsize=(5, 5), plotsize=2)
+s = mcmc.get_samples()
+for i in range(N_src):
+    ax.scatter(s[f"rad{i}_loc"][-100:, 0], s[f"rad{i}_loc"][-100:, 1], c="y", alpha=0.05)
+    ax.scatter(s[f"rad{i}_loc"][:, 0].mean(), s[f"rad{i}_loc"][:, 1].mean(), c="c")
 ```
 
 ```python
